@@ -59,7 +59,7 @@ modeule.exports = {
 
         return new Promise((resolve, reject) => {
 
-            conn.query(`SELECT * FROM tb_users ORDER BY title`, (err, results) => {
+            conn.query(`SELECT * FROM tb_users ORDER BY name`, (err, results) => {
 
                 if (err) {
             
@@ -142,6 +142,42 @@ modeule.exports = {
              resolve(results);
           }
         });
+
+      });
+
+    },
+    changePassword(req){
+
+      return new Promise((resolve, reject) => {
+
+        if (!req.fields.password) {
+
+          reject("Preencha a senha!");
+        
+        } else if (req.fields.password !== req.fields.passwordConfirm) {
+
+          reject("Senha não está correta, tentar novamente!");
+
+        } else {
+
+          conn.query(`
+
+            UPDATE tb_users SET
+            password = ? WHERE id = ?
+          `, [
+            req.fields.password,
+            req.fields.id
+          ], (err, results) => {
+
+            if (err) {
+              reject(err.message);
+            } else {
+              resolve(results);
+            }
+          });
+        }
+
+
 
       });
 
